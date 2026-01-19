@@ -10,9 +10,9 @@ class Recipe extends Model
     use HasFactory;
 
     protected $table = 'recipes';
+    protected $primaryKey = 'recipe_id';
 
-    // ❗ Nếu bảng dùng id mặc định thì KHÔNG khai báo primaryKey
-    // protected $primaryKey = 'recipe_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',

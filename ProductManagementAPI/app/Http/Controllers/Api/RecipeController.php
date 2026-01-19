@@ -8,65 +8,63 @@ use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
-    // GET ALL
+    // 1. GET ALL
     public function index()
     {
         return response()->json(Recipe::all(), 200);
     }
 
-    // POST - CREATE
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'difficulty' => 'required|string',
-            'status' => 'required|string'
-        ]);
-
-        $recipe = Recipe::create($request->all());
-
-        return response()->json([
-            'message' => 'Created successfully',
-            'data' => $recipe
-        ], 201);
-    }
-
-    // GET BY ID
+    // 2. GET BY ID
     public function show($id)
     {
         $recipe = Recipe::find($id);
 
         if (!$recipe) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Recipe not found'], 404);
         }
 
         return response()->json($recipe, 200);
     }
 
-    // PUT - UPDATE
+    // 3. POST
+    public function store(Request $request)
+    {
+        $recipe = Recipe::create([
+            'user_id' => $request->user_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'cooking_time' => $request->cooking_time,
+            'servings' => $request->servings,
+            'difficulty' => $request->difficulty,
+            'image_url' => $request->image_url,
+            'status' => 'Published',
+            'views' => 0
+        ]);
+
+        return response()->json($recipe, 201);
+    }
+
+    // 4. PUT
     public function update(Request $request, $id)
     {
         $recipe = Recipe::find($id);
 
         if (!$recipe) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Recipe not found'], 404);
         }
 
         $recipe->update($request->all());
 
-        return response()->json([
-            'message' => 'Updated successfully',
-            'data' => $recipe
-        ], 200);
+        return response()->json($recipe, 200);
     }
 
-    // DELETE
+    // 5. DELETE
     public function destroy($id)
     {
         $recipe = Recipe::find($id);
 
         if (!$recipe) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Recipe not found'], 404);
         }
 
         $recipe->delete();
